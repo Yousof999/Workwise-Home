@@ -1,20 +1,30 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import type { Account } from "../../appTypes";
 import "./sign in.css";
+
+interface SignInForm {
+	username: string;
+	password: string;
+}
+
+interface SignInPageProps {
+	onSignedIn: (username: string) => void;
+}
 
 const accountStorageKey = "workwiseAccount";
 
-export default function SignInPage({ onSignedIn }) {
+export default function SignInPage({ onSignedIn }: SignInPageProps) {
 	const navigate = useNavigate();
-	const [formData, setFormData] = useState({ username: "", password: "" });
+	const [formData, setFormData] = useState<SignInForm>({ username: "", password: "" });
 	const [error, setError] = useState("");
 
-	const handleChange = (event) => {
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
 		setFormData((current) => ({ ...current, [name]: value }));
 	};
 
-	const handleSubmit = (event) => {
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const storedAccount = localStorage.getItem(accountStorageKey);
 
@@ -23,7 +33,7 @@ export default function SignInPage({ onSignedIn }) {
 			return;
 		}
 
-		const account = JSON.parse(storedAccount);
+		const account = JSON.parse(storedAccount) as Account;
 		const validCredentials = account.username === formData.username.trim()
 			&& account.password === formData.password;
 

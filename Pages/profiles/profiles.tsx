@@ -32,8 +32,8 @@ const profiles = [
   },
 ];
 
-export default function ProfilesPage({ searchTerm = "" }) {
-  const [followed, setFollowed] = useState({});
+export default function ProfilesPage({ searchTerm = "" }: { searchTerm?: string }) {
+  const [followed, setFollowed] = useState<Record<string, boolean>>({});
   const [selectedProfile, setSelectedProfile] = useState(profiles[0]);
   const normalizedSearch = searchTerm.trim().toLowerCase();
 

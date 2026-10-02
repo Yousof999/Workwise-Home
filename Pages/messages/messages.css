@@ -122,6 +122,32 @@
   font-size: 13px;
 }
 
+.message-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.message-row--me {
+  justify-content: flex-end;
+}
+
+.message-delete {
+  border: none;
+  padding: 10px 7px;
+  border-radius: 5px;
+  scale: 0.7;
+  background: red;
+  color: white;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.message-delete:hover {
+  background-color: rgb(202, 21, 21);
+}
+
 .bubble.them {
   background: #f5f5f5;
   color: var(--text);

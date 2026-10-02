@@ -1,6 +1,18 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import React, { useRef, useState } from "react";
+import type { JobApplication, JobPosting } from "../../appTypes";
 import "./applying.css";
+
+interface ApplicationForm {
+  fullName: string;
+  email: string;
+  phone: string;
+  portfolio: string;
+  coverLetter: string;
+  resume: string;
+}
+
+type ApplicationJob = Partial<JobPosting> & { role?: string };
 
 const defaultApplicationSummary = {
   role: "Senior Product Designer",
@@ -12,8 +24,8 @@ const defaultApplicationSummary = {
 export default function ApplyingPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
-  const selectedJob = location.state?.job ?? defaultApplicationSummary;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const selectedJob: ApplicationJob = (location.state as { job?: ApplicationJob } | null)?.job ?? defaultApplicationSummary;
   const applicationSummary = {
     role: selectedJob.title ?? selectedJob.role ?? defaultApplicationSummary.role,
     company: selectedJob.company ?? defaultApplicationSummary.company,
@@ -21,7 +33,7 @@ export default function ApplyingPage() {
     salary: selectedJob.salary ?? defaultApplicationSummary.salary,
   };
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<ApplicationForm>({
     fullName: "John Doe",
     email: "john@example.com",
     phone: "+1 (555) 234-8899",
@@ -32,13 +44,13 @@ export default function ApplyingPage() {
 
   const [uploadError, setUploadError] = useState("");
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
     const fileExtension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
@@ -52,9 +64,9 @@ export default function ApplyingPage() {
     setForm((current) => ({ ...current, resume: file.name }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const storedApplications = JSON.parse(localStorage.getItem("jobApplications") || "[]");
+    const storedApplications: JobApplication[] = JSON.parse(localStorage.getItem("jobApplications") || "[]");
     const application = {
       jobTitle: applicationSummary.role,
       company: applicationSummary.company,
@@ -131,7 +143,7 @@ export default function ApplyingPage() {
 
             <label>
               Cover letter
-              <textarea name="coverLetter" rows="6" value={form.coverLetter} onChange={handleChange} />
+              <textarea name="coverLetter" rows={6} value={form.coverLetter} onChange={handleChange} />
             </label>
 
             <div className="upload-row">

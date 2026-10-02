@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { JobApplication, JobPosting } from "../../appTypes";
 import "./jobs.css";
 
 const defaultJobs = [
@@ -35,34 +36,42 @@ const defaultJobs = [
   },
 ];
 
-const getStoredJobs = () => {
+const getStoredJobs = (): JobPosting[] => {
   if (typeof window === "undefined") {
     return defaultJobs;
   }
 
   try {
     const stored = localStorage.getItem("postedJobs");
-    return stored ? JSON.parse(stored) : defaultJobs;
+    return stored ? JSON.parse(stored) as JobPosting[] : defaultJobs;
   } catch {
     return defaultJobs;
   }
 };
 
-const getAppliedJobs = () => {
+const getAppliedJobs = (): JobApplication[] => {
   if (typeof window === "undefined") return [];
 
   try {
-    return JSON.parse(localStorage.getItem("jobApplications") || "[]");
+    return JSON.parse(localStorage.getItem("jobApplications") || "[]") as JobApplication[];
   } catch {
     return [];
   }
 };
 
-export default function JobsPage({ searchTerm = "" }) {
+export default function JobsPage({ searchTerm = "" }: { searchTerm?: string }) {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState(getStoredJobs);
-  const [appliedJobs] = useState(getAppliedJobs);
+  const [appliedJobs, setAppliedJobs] = useState(getAppliedJobs);
   const normalizedSearch = searchTerm.trim().toLowerCase();
+
+  const removeApplication = (job: JobPosting) => {
+    const remainingApplications = appliedJobs.filter(
+      (application) => application.jobTitle !== job.title || application.company !== job.company
+    );
+    localStorage.setItem("jobApplications", JSON.stringify(remainingApplications));
+    setAppliedJobs(remainingApplications);
+  };
 
   const visibleJobs = jobs.filter((job) => {
     if (!normalizedSearch) return true;
@@ -114,7 +123,15 @@ export default function JobsPage({ searchTerm = "" }) {
             </div>
 
             <div className="job-actions">
-              {isApplied ? <strong className="applied-label">Applied</strong> : (
+              {isApplied ? (
+                <button
+                  type="button"
+                  className="btn btn--ghost"
+                  onClick={() => removeApplication(job)}
+                >
+                  Remove application
+                </button>
+              ) : (
                 <button
                   type="button"
                   className="btn btn--red"

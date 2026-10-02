@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link, NavLink, Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import CompaniesPage from "./Pages/companies/companies.jsx";
-import ProfilesPage from "./Pages/profiles/profiles.jsx";
-import JobsPage from "./Pages/jobs/jobs.jsx";
-import ProjectPage from "./Pages/Project/project.jsx";
-import MessagesPage from "./Pages/messages/messages.jsx";
-import ApplyingPage from "./Pages/applying/applying.jsx";
-import PostProjectPage from "./Pages/posting project/postProject.jsx";
-import SignInPage from "./Pages/sign in/sign in.jsx";
-import SignUpPage from "./Pages/sign up/sign up.jsx";
+import type { PostedProject } from "./appTypes";
+import CompaniesPage from "./Pages/companies/companies.tsx";
+import ProfilesPage from "./Pages/profiles/profiles.tsx";
+import JobsPage from "./Pages/jobs/jobs.tsx";
+import ProjectPage from "./Pages/Project/project.tsx";
+import MessagesPage from "./Pages/messages/messages.tsx";
+import ApplyingPage from "./Pages/applying/applying.tsx";
+import PostProjectPage from "./Pages/posting project/postProject.tsx";
+import SignInPage from "./Pages/sign in/sign in.tsx";
+import SignUpPage from "./Pages/sign up/sign up.tsx";
 
 const navLinks = [
   { label: "Home", path: "/home" },
@@ -35,24 +36,24 @@ const topJobs = [
   { title: "Senior Developer", salary: "$25/hr" },
 ];
 
-const getStoredProjects = () => {
+const getStoredProjects = (): PostedProject[] => {
   if (typeof window === "undefined") return [];
 
   try {
     const stored = localStorage.getItem("postedProjects");
-    return stored ? JSON.parse(stored) : [];
+    return stored ? JSON.parse(stored) as PostedProject[] : [];
   } catch {
     return [];
   }
 };
 
-const Avatar = ({ name, size = 40 }) => (
+const Avatar = ({ name, size = 40 }: { name: string; size?: number }) => (
   <span className="avatar" style={{ width: size, height: size, fontSize: size * 0.4 }}>
     {name.split(" ").map((w) => w[0]).join("").slice(0, 2)}
   </span>
 );
 
-function Navbar({ userName }) {
+function Navbar({ userName }: { userName: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -82,7 +83,7 @@ function Navbar({ userName }) {
   );
 }
 
-function ProfileCard({ userName }) {
+function ProfileCard({ userName }: { userName: string }) {
   return (
     <section className="card profile-card">
       <div className="profile-card__cover" />
@@ -97,7 +98,7 @@ function ProfileCard({ userName }) {
 }
 
 
-function PostBar({ userName }) {
+function PostBar({ userName }: { userName: string }) {
   const navigate = useNavigate();
   const [jobLabel, setJobLabel] = useState("Post a Project");
 
@@ -116,7 +117,7 @@ function PostBar({ userName }) {
   );
 }
 
-function ProjectPost({ userName, project }) {
+function ProjectPost({ userName, project }: { userName: string; project: PostedProject }) {
   const [liked, setLiked] = useState(false);
   return (
     <section className="card">
@@ -158,7 +159,7 @@ function TopJobs() {
   );
 }
 
-function HomePage({ searchTerm = "", userName }) {
+function HomePage({ searchTerm = "", userName }: { searchTerm?: string; userName: string }) {
   const [projects] = useState(getStoredProjects);
   const normalizedSearch = searchTerm.trim().toLowerCase();
 

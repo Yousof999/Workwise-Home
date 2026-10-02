@@ -8,7 +8,7 @@ const initialNotifications = [
   { id: 4, title: "Profile viewed", text: "Your profile has been viewed by 8 recruiters this week.", time: "Yesterday", read: true },
 ];
 
-export default function NotificationPage({ searchTerm = "" }) {
+export default function NotificationPage({ searchTerm = "" }: { searchTerm?: string }) {
   const [notifications, setNotifications] = useState(initialNotifications);
   const normalizedSearch = searchTerm.trim().toLowerCase();
 

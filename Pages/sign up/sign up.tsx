@@ -1,20 +1,25 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import type { Account } from "../../appTypes";
 import "./sign up.css";
+
+interface SignUpForm extends Account {
+	confirmPassword: string;
+}
 
 const accountStorageKey = "workwiseAccount";
 
 export default function SignUpPage() {
 	const navigate = useNavigate();
-	const [formData, setFormData] = useState({ username: "", email: "", password: "", confirmPassword: "" });
+	const [formData, setFormData] = useState<SignUpForm>({ username: "", email: "", password: "", confirmPassword: "" });
 	const [error, setError] = useState("");
 
-	const handleChange = (event) => {
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
 		setFormData((current) => ({ ...current, [name]: value }));
 	};
 
-	const handleSubmit = (event) => {
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		if (formData.password !== formData.confirmPassword) {

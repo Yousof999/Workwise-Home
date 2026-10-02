@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { PostedProject } from "../../appTypes";
 import "./project.css";
 
-const initialProjects = [];
+const initialProjects: PostedProject[] = [];
 
 const exampleProjectTitles = new Set([
   "E-commerce Redesign",
@@ -10,21 +11,21 @@ const exampleProjectTitles = new Set([
   "Brand Identity Pack",
 ]);
 
-const getStoredProjects = () => {
+const getStoredProjects = (): PostedProject[] => {
   if (typeof window === "undefined") {
     return initialProjects;
   }
 
   try {
     const stored = localStorage.getItem("postedProjects");
-    const projects = stored ? JSON.parse(stored) : initialProjects;
+    const projects = stored ? JSON.parse(stored) as PostedProject[] : initialProjects;
     return projects.filter((project) => !exampleProjectTitles.has(project.title));
   } catch {
     return initialProjects;
   }
 };
 
-export default function ProjectPage({ searchTerm = "" }) {
+export default function ProjectPage({ searchTerm = "" }: { searchTerm?: string }) {
   const navigate = useNavigate();
   const [projects, setProjects] = useState(getStoredProjects);
 
@@ -44,7 +45,7 @@ export default function ProjectPage({ searchTerm = "" }) {
     navigate("/post-project");
   };
 
-  const handleDeleteProject = (titleToDelete) => {
+  const handleDeleteProject = (titleToDelete: string) => {
     const updatedProjects = projects.filter((project) => project.title !== titleToDelete);
     setProjects(updatedProjects);
 

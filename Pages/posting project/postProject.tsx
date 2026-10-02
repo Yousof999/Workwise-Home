@@ -2,7 +2,17 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./postProject.css";
 
-const initialForm = {
+interface ProjectForm {
+  title: string;
+  category: string;
+  budget: string;
+  deadline: string;
+  description: string;
+  skills: string;
+  location: string;
+}
+
+const initialForm: ProjectForm = {
   title: "",
   category: "Web Development",
   budget: "",
@@ -14,19 +24,19 @@ const initialForm = {
 
 export default function PostProjectPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState(initialForm);
+  const [formData, setFormData] = useState<ProjectForm>(initialForm);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const storedProjects = JSON.parse(localStorage.getItem("postedProjects") || "[]");
-    const accentMap = {
+    const accentMap: Record<string, string> = {
       "Web Development": "blue",
       "UI/UX Design": "red",
       Branding: "green",
@@ -123,7 +133,7 @@ export default function PostProjectPage() {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                rows="5"
+                rows={5}
                 placeholder="Describe the project goals, deliverables, and expectations..."
                 required
               />

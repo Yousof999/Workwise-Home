@@ -99,7 +99,7 @@ const hiring = [
 
 const savedSearches = ["Product Designers", "Remote Frontend", "AI Engineers", "Business Analysts"];
 
-export default function CompaniesPage({ searchTerm: globalSearchTerm = "" }) {
+export default function CompaniesPage({ searchTerm: globalSearchTerm = "" }: { searchTerm?: string }) {
   const [companies, setCompanies] = useState(initialCompanies);
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
@@ -128,7 +128,7 @@ export default function CompaniesPage({ searchTerm: globalSearchTerm = "" }) {
     return filtered;
   }, [companies, activeFilter, searchTerm, sortBy]);
 
-  const toggleFollow = (companyName) => {
+  const toggleFollow = (companyName: string) => {
     setCompanies((current) =>
       current.map((company) =>
         company.name === companyName ? { ...company, followed: !company.followed } : company
